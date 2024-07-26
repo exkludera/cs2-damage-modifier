@@ -1,4 +1,4 @@
-# cs2-trails
+# cs2-damage-modifier
 **a plugin to modify weapon damage**
 > request from counterstrikesharp discord
 
