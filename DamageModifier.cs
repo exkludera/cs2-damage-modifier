@@ -1,5 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 using Microsoft.Extensions.Logging;
@@ -21,6 +23,9 @@ public class Config : BasePluginConfig
         { "weapon_awp", new Weapon { ForceDamage = 1.0f } },
     };
 
+    [JsonPropertyName("PermissionFlag")]
+    public string PermissionFlag { get; set; } = "";
+
     [JsonPropertyName("Debug")]
     public bool Debug { get; set; } = false;
 }
@@ -28,7 +33,7 @@ public class Config : BasePluginConfig
 public class DamageModifier : BasePlugin, IPluginConfig<Config>
 {
     public override string ModuleName => "Damage Modifier";
-    public override string ModuleVersion => "1.0";
+    public override string ModuleVersion => "1.1";
     public override string ModuleAuthor => "exkludera";
 
     public Config Config { get; set; } = new Config();
@@ -76,23 +81,24 @@ public class DamageModifier : BasePlugin, IPluginConfig<Config>
         if (weaponData == null || !weaponData.IsValid)
             return HookResult.Continue;
 
+        if (Config.PermissionFlag != "" && !AdminManager.PlayerHasPermissions(damageInfo.Attacker.Value!.As<CCSPlayerController>(), Config.PermissionFlag))
+            return HookResult.Continue;
+
         if (Config.Weapons.ContainsKey(weaponData.DesignerName))
         {
             Weapon weaponConfig = Config.Weapons[weaponData.DesignerName];
 
-            var oldDamage = damageInfo.Damage;
-
-            var damage = oldDamage;
+            float oldDamage = damageInfo.Damage;
 
             if (weaponConfig.ForceDamage > 0)
-                damage = weaponConfig.ForceDamage;
+                damageInfo.Damage = weaponConfig.ForceDamage;
 
             else if (weaponConfig.Multiplier > 0)
-                damage *= weaponConfig.Multiplier;
+                damageInfo.Damage *= weaponConfig.Multiplier;
 
             Debug($"[DamageModifier] attacker: {attacker.PlayerName}");
             Debug($"[DamageModifier] victim: {victim!.PlayerName}");
-            Debug($"[DamageModifier] {weaponData.DesignerName} from {Math.Round(oldDamage)} to {Math.Round(damage)}");
+            Debug($"[DamageModifier] {weaponData.DesignerName} from {Math.Round(oldDamage)} to {Math.Round(damageInfo.Damage)}");
         }
 
         return HookResult.Continue;
