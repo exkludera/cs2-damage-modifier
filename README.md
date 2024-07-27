@@ -1,17 +1,22 @@
 # cs2-damage-modifier
 **a plugin to modify weapon damage**
-> request from counterstrikesharp discord
 
 <br>
 
 ## information
+
+### requirements
+- [MetaMod](https://cs2.poggu.me/metamod/installation)
+- [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
+
+<br>
 
 > [!CAUTION]
 > only runs on linux servers
 >
 > sometimes on fatal shots (according to the engine) breaks calculation? not sure how it works
 
-## config
+## example config
 ```json
 {
   "Weapons": {
