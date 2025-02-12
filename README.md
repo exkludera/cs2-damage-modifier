@@ -1,3 +1,8 @@
+# dont use this plugin😆
+### > check out [schwarper/cs2-advanced-weapon-system](https://github.com/schwarper/cs2-advanced-weapon-system)
+
+<br>
+
 # cs2-damage-modifier
 **a plugin to modify weapon damage**
 
